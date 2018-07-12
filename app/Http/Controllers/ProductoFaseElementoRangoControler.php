@@ -8,18 +8,6 @@ use App\ProductoFaseElementoRango;
 
 class ProductoFaseElementoRangoControler extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-public function consumirApiDeCicoh
-{
-
-
-
-}
 
     public function index()
     {
@@ -45,7 +33,17 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
      */
     public function store(Request $request)
     {
-        //
+
+    }
+
+    public function all()
+    {
+        try {
+        return  ProductoFaseElementoRango::all();
+        } catch (\Exception $e) {
+
+        }
+
     }
 
     /**

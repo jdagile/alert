@@ -21,3 +21,4 @@ Route::get('login','Auth\LoginController@showLoginForm');
 
 //Rutas de cicohalert
 Route::resource('productorango','ProductoFaseElementoRangoControler');
+Route::resource('prueba','MasterControler');
