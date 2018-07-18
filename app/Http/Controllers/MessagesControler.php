@@ -5,6 +5,8 @@ use cicohalert;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Message;
+use App\UnidadDeMedida;
+use App\Elementos;
 
 class MessagesControler extends Controller
 {

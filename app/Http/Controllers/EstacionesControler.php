@@ -1,17 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Estaciones;
 use Illuminate\Http\Request;
-use cicohalert;
-use App\ProductoFaseElementoRango;
 
-class ProductoFaseElementoRangoControler extends Controller
+class EstacionesControler extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-      $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
-return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
+        //
     }
 
     /**
@@ -32,29 +34,26 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
      */
     public function store(Request $request)
     {
-
+        //
     }
-
-    public function all()
+    public function ObtenerTodos()
     {
-        try {
-        return  ProductoFaseElementoRango::all();
-        } catch (\Exception $e) {
 
-        }
-
+        return  Estaciones::all();
     }
-
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
-    }
+     public function show($id)
+     {
+
+       $listaEstaciones = Estaciones::where('id', '=', $id)->exists();
+
+        return  $listaEstaciones;
+     }
 
     /**
      * Show the form for editing the specified resource.

@@ -1,17 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use cicohalert;
-use App\ProductoFaseElementoRango;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use App\UnidadDeMedida;
 
-class ProductoFaseElementoRangoControler extends Controller
+class UnidadDeMedidaControler extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-      $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
-return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
+      $unidadDeMedida = UnidadDeMedida::where('simbolo', '=', 'V')->where('simbolo', 'like', '%a%')->get();
+
+
+
     }
 
     /**
@@ -30,19 +37,21 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($request)
     {
-
+      $seGuardo  =false;
+    //  $unidadDeMedida = UnidadDeMedida::where('simbolo', '=', 'V')->where('simbolo', '=', 'V')->get();
+    UnidadDeMedida::create($request->all());
+        $seGuardo =true;
+        return $seGuardo;
+     return $unidadDeMedida;
     }
 
-    public function all()
+
+    public function ObtenerTodos()
     {
-        try {
-        return  ProductoFaseElementoRango::all();
-        } catch (\Exception $e) {
 
-        }
-
+        return  UnidadDeMedida::all();
     }
 
     /**
@@ -53,7 +62,8 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
      */
     public function show($id)
     {
-        //
+      $message =UnidadDeMedida::findOrFail($id);
+
     }
 
     /**

@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use cicohalert;
-use App\ProductoFaseElementoRango;
+use App\Elementos;
 
-class ProductoFaseElementoRangoControler extends Controller
+class ElementosControler extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-      $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
-return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
+        //
+    }
+    public function ObtenerTodos()
+    {
+
+        return  Elementos::all();
     }
 
     /**
@@ -32,16 +40,7 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
      */
     public function store(Request $request)
     {
-
-    }
-
-    public function all()
-    {
-        try {
-        return  ProductoFaseElementoRango::all();
-        } catch (\Exception $e) {
-
-        }
+      
 
     }
 
