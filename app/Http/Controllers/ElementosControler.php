@@ -40,7 +40,7 @@ class ElementosControler extends Controller
      */
     public function store(Request $request)
     {
-      
+
 
     }
 
@@ -52,7 +52,16 @@ class ElementosControler extends Controller
      */
     public function show($id)
     {
-        //
+      $listaElementos = Elementos::where('id', '=', $id)->exists();
+
+       return  $listaElementos;
+    }
+
+    public function VerificarExistencia($id)
+    {
+      $listaElementos = Elementos::where('id', '=', $id)->exists();
+
+       return  $listaElementos;
     }
 
     /**

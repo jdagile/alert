@@ -47,6 +47,13 @@ class EstacionesControler extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+     public function VerificarExistencia($id)
+     {
+       $estaciones = Estaciones::where('id', '=', $id)->exists();
+
+        return  $estaciones;
+     }
+
      public function show($id)
      {
 

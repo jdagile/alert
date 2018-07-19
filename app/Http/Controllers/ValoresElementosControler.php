@@ -38,18 +38,18 @@ class ValoresElementosControler extends Controller
       try {
 
         $nuevoValorElemento =  new ValoresElementos;
-        $nuevoValorElemento->estaciones_id = $valoresElementos["station_id"];
-        $nuevoValorElemento->elementos_id =  $valoresElementos["element_id"];
-        $nuevoValorElemento->unidaddemedida_simbolo = $valoresElementos["symbol"];
-        $nuevoValorElemento->fechaestacion =$valoresElementos["datetime"];
+        $nuevoValorElemento->estaciones_id = $valoresElementos["estaciones_id"];
+        $nuevoValorElemento->elementos_id =  $valoresElementos["elementos_id"];
+        $nuevoValorElemento->unidaddemedida_simbolo = $valoresElementos["unidaddemedida_simbolo"];
+        $nuevoValorElemento->fechaestacion =$valoresElementos["fechaestacion"];
         $nuevoValorElemento->valor =$valoresElementos["valor"];
         $nuevoValorElemento->estaactivo = $valoresElementos["estaactivo"];
         $nuevoValorElemento->dia = $valoresElementos["dia"];
         $nuevoValorElemento->mes  = $valoresElementos["mes"];
         $nuevoValorElemento->anio = $valoresElementos["anio"];
-      //  echo "entro al metodo store";
-      //  print_r($nuevoValorElemento);
-    //  $nuevoValorElemento->save();
+
+
+   $nuevoValorElemento->save();
 
         $nuevoValorElemento =true;
       } catch (\Exception $e) {
@@ -57,24 +57,18 @@ class ValoresElementosControler extends Controller
       }
     }
     public function VerificarExistencia($valoresElementos)
-    {
-try {
-  $existeRegistro =false;
-  $ValoresElementos = null;
+   {
+        try {
+          $ResultadoValoresElementos =false;
+         $ResultadoValoresElementos = ValoresElementos::where('estaciones_id', '=', $valoresElementos["estaciones_id"])
+          ->where('elementos_id', '=', $valoresElementos["elementos_id"])
+          ->where('fechaestacion', '=',$valoresElementos["fechaestacion"])->exists();
 
+            return $ResultadoValoresElementos;
 
-  $ResultadoValoresElementos = ValoresElementos::where('estaciones_id', '=', $valoresElementos["station_id"])
-  ->where('elementos_id', '=', $valoresElementos["element_id"])
-  ->where('fechaestacion', '=',$valoresElementos["datetime"])->exists();
-//echo $ResultadoValoresElementos;
+            } catch (\Exception $e) {
 
-
-
-    return $ResultadoValoresElementos;
-
-} catch (\Exception $e) {
-
-}
+    }
 
 
     }

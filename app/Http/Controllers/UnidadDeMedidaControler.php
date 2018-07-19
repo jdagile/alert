@@ -65,6 +65,12 @@ class UnidadDeMedidaControler extends Controller
       $message =UnidadDeMedida::findOrFail($id);
 
     }
+    public function VerificarExistencia($simbolo)
+    {
+      $unidadesDeMedida = UnidadDeMedida::where('simbolo', '=', $simbolo)->exists();
+
+       return  $unidadesDeMedida;
+    }
 
     /**
      * Show the form for editing the specified resource.

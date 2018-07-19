@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Elementos;
 use App\UnidadDeMedida;
 use App\Estaciones;
+use App\ValoresElementos;
 class MasterControler extends Controller
 {
 /*
@@ -17,7 +18,6 @@ class MasterControler extends Controller
 */
   public function index()
   {
-
     //unidadesDeMedidas
     $unidadesControler =null;
     $unidadDeMedidaControler       = new UnidadDeMedidaControler();
@@ -60,9 +60,7 @@ foreach ($estaciones as $estacion) {
        //Verificar el registro de la estacion.
        $exixteLaEstacion=false;
         $estacionesControler= new EstacionesControler();
-        $exixteLaEstacion= $estacionesControler->show($item['station_id'] );
-
-
+        $exixteLaEstacion= $estacionesControler->VerificarExistencia($item['station_id'] );
        if($exixteLaEstacion == false)
        {
 
@@ -80,14 +78,7 @@ foreach ($estaciones as $estacion) {
        }
 
        //Verificar el registro de unidades de UnidadDeMedida
-          $existeUnidadDeMedida = false;
-          foreach ($unidadesDeMedidas as $unidad)
-                {
-                  if(   $item['symbol'] ==  $unidad['simbolo'])
-                   {
-                        $existeUnidadDeMedida =true;
-                   }
-                  }
+          $existeUnidadDeMedida = $unidadDeMedidaControler->VerificarExistencia($item['symbol'] );
                   if(!$existeUnidadDeMedida)
                   {
                $nuevaUnidadDeMedida = new UnidadDeMedida();
@@ -95,17 +86,11 @@ foreach ($estaciones as $estacion) {
                $nuevaUnidadDeMedida->descripcion = $item['symbol'];
                $nuevaUnidadDeMedida->estaactivo = true;
                $nuevaUnidadDeMedida->id_usuariocreo = 1;
-              // $nuevaUnidadDeMedida->save();
-
+               $nuevaUnidadDeMedida->save();
+               $existeUnidadDeMedida =true;
                   }
        //verificar si esta registrado el elemento.
-       $existeElemento =false;
-       foreach ($elementos as $elemento) {
-            if(   $item['element_id'] ==  $elemento['id'])
-            {
-                 $existeElemento =true;
-            }
-       }
+        $existeElemento=  $elementosControlador->VerificarExistencia( $item['element_id'] );
        if(!$existeElemento)
        {
          $nuevoElemento =  new Elementos;
@@ -114,39 +99,34 @@ foreach ($estaciones as $estacion) {
          $nuevoElemento->descripcion = $item['element_symbol']." ".$item['element_name'];
          $nuevoElemento->estaactivo = true;
          $nuevoElemento->id_usuariocreo = 1;
-      //   $nuevoElemento->save();
+        $nuevoElemento->save();
         $existeElemento =true;
        }
-
-
-
-
-
-
        //tiempo de estacionenes.
        $fechaDeEstacion=   $item['datetime'];
        $dia =date("d",strtotime($fechaDeEstacion));
        $mes =date("m",strtotime($fechaDeEstacion));
        $anio =date("y",strtotime($fechaDeEstacion));
 
-// Insertar Velores de Elementos en la tabla valoreselementos.
+
 
 //$listaDeValoresElementos = array_add($listaDeValoresElementos, array(['station_id', $item['station_id']);
 $listaDeValoresElementos = array([]);
-$listaDeValoresElementos = array_add($listaDeValoresElementos, 'station_id', $item['station_id']);
-$listaDeValoresElementos = array_add($listaDeValoresElementos, 'element_id', $item['element_id']);
-$listaDeValoresElementos = array_add($listaDeValoresElementos, 'symbol', $item['symbol']);
-$listaDeValoresElementos = array_add($listaDeValoresElementos, 'datetime', $item['datetime']);
+$listaDeValoresElementos = array_add($listaDeValoresElementos, 'estaciones_id', $item['station_id']);
+$listaDeValoresElementos = array_add($listaDeValoresElementos, 'elementos_id', $item['element_id']);
+$listaDeValoresElementos = array_add($listaDeValoresElementos, 'unidaddemedida_simbolo', $item['symbol']);
+$listaDeValoresElementos = array_add($listaDeValoresElementos, 'fechaestacion', $item['datetime']);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'valor', $item['valor']);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'estaactivo', true);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'dia', $dia);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'mes', $mes);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'anio', $anio);
+$valoresElementosControler= new ValoresElementosControler();
+$existenValoresElementos = $valoresElementosControler->VerificarExistencia($listaDeValoresElementos);
 
-$valoresElementosControler = new ValoresElementosControler();
-$exixte = $valoresElementosControler->VerificarExistencia($listaDeValoresElementos);
-if(!$exixte)
+if($existenValoresElementos=="")
 {
+  echo  "****/*/*/*/*/*/*/*/-".$existenValoresElementos."-***/*/*/*/*/*/*/*/*".'<br>';
 
   $valoresElementosControler->store($listaDeValoresElementos);
 }
