@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ValoresElementos;
-
+use Carbon\Carbon;
 class ValoresElementosControler extends Controller
 {
     /**
@@ -36,7 +36,7 @@ class ValoresElementosControler extends Controller
     public function store( $valoresElementos)
     {
       try {
-
+        $fechaActual =Carbon::now()->subHours(6)->toDateTimeString();
         $nuevoValorElemento =  new ValoresElementos;
         $nuevoValorElemento->estaciones_id = $valoresElementos["estaciones_id"];
         $nuevoValorElemento->elementos_id =  $valoresElementos["elementos_id"];
@@ -47,11 +47,10 @@ class ValoresElementosControler extends Controller
         $nuevoValorElemento->dia = $valoresElementos["dia"];
         $nuevoValorElemento->mes  = $valoresElementos["mes"];
         $nuevoValorElemento->anio = $valoresElementos["anio"];
-
-
-   $nuevoValorElemento->save();
-
-        $nuevoValorElemento =true;
+        $nuevoValorElemento->created_at  = $fechaActual;
+        $nuevoValorElemento->updated_at  = $fechaActual;
+        $nuevoValorElemento->save();
+    
       } catch (\Exception $e) {
         echo "--------ocurrio un error al Registrar ValoresElementos   --->".$e;
       }

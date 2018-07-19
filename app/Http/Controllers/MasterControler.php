@@ -5,14 +5,15 @@ use App\Elementos;
 use App\UnidadDeMedida;
 use App\Estaciones;
 use App\ValoresElementos;
+
 class MasterControler extends Controller
 {
 /*
                                        PUNTOS IMPORANTES POR PROGRAMAR
 1.Definir en que fase fenologica del año estamos
-2.Sincronizar automaticamente tablas generales
-3.Determinar si  una jornada Diurna o Nocturna en base a la hora del dia
-4.Registro de Valores elementos.
+2.Sincronizar automaticamente tablas generales *OK*
+3.Determinar si  una jornada Diurna o Nocturna en base a la hora del dia *OK*
+4.Registro de Valores elementos.*OK*
 5.Registro de Alertas.
 6.La validacion de precipitacion del cuadro de excel de capucas debe realizar en base a acumulados
 */
@@ -74,7 +75,7 @@ foreach ($estaciones as $estacion) {
          $nuevaEsacion->id_usuariocreo = 1;
          $nuevaEsacion->save();
          $exixteLaEstacion =true;
-         echo "**************************Guardo Nueva estacion********   ".$item['station_id'];
+
        }
 
        //Verificar el registro de unidades de UnidadDeMedida
@@ -104,13 +105,11 @@ foreach ($estaciones as $estacion) {
        }
        //tiempo de estacionenes.
        $fechaDeEstacion=   $item['datetime'];
+        $hora =date("H",strtotime($fechaDeEstacion));
        $dia =date("d",strtotime($fechaDeEstacion));
        $mes =date("m",strtotime($fechaDeEstacion));
        $anio =date("y",strtotime($fechaDeEstacion));
-
-
-
-//$listaDeValoresElementos = array_add($listaDeValoresElementos, array(['station_id', $item['station_id']);
+//Verificacion de existencia de ValoresElementos.
 $listaDeValoresElementos = array([]);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'estaciones_id', $item['station_id']);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'elementos_id', $item['element_id']);
@@ -123,24 +122,25 @@ $listaDeValoresElementos = array_add($listaDeValoresElementos, 'mes', $mes);
 $listaDeValoresElementos = array_add($listaDeValoresElementos, 'anio', $anio);
 $valoresElementosControler= new ValoresElementosControler();
 $existenValoresElementos = $valoresElementosControler->VerificarExistencia($listaDeValoresElementos);
-
-if($existenValoresElementos=="")
+//Si no esta registrado en la base de datos se registra
+if($existenValoresElementos != 1)
 {
-  echo  "****/*/*/*/*/*/*/*/-".$existenValoresElementos."-***/*/*/*/*/*/*/*/*".'<br>';
-
   $valoresElementosControler->store($listaDeValoresElementos);
 }
-
-
+//Registro de Alertas.
+$jornada =0;
+if( $hora >=5  and $hora <=17 )
+{
+  $jornada =1;
+}
+else {
+  $jornada =2;
+}
+//ObtenerParametrosDeProductoFaseElementoRango
 
          foreach($productoFaseElementoRangos as $productoFaseElementoRango)
          {
-          //echo $productoFaseElementoRango['tipoproducto_id'].'<br>';
-          //echo $productoFaseElementoRango['fasefenologica_id'].'<br>';
-          //echo $productoFaseElementoRango['elementos_id'].'<br>';
-          //echo $productoFaseElementoRango['unidaddemedida_id'].'<br>';
-          //echo $productoFaseElementoRango['valorminimo'].'<br>';
-          //echo $productoFaseElementoRango['valormaximo'].'<br>';
+
          if(  ($item['element_id']== $productoFaseElementoRango['elementos_id']) and $item['valor'] !=0  )
          {
            if($item['valor']< $productoFaseElementoRango['valorminimo'])
@@ -155,9 +155,6 @@ if($existenValoresElementos=="")
        }
 
 }
-
-
-
 
      foreach($items ['resource']  as $item ) {
        //Inicialización de variables
@@ -185,9 +182,6 @@ if($existenValoresElementos=="")
              $valor = $item['valor'];
              $datetime = $item['datetime'];
              $descripcion = $station_id." ".$station_name." Id Elemento ".$element_id." simbolo ".$element_symbol." ".$element_name." Valor ".$valor." Unidad ".$symbol ;
-
-
-
            }
 
 return view('prueba');

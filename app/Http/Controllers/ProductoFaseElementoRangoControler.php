@@ -55,7 +55,19 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
     {
         //
     }
+    public function ObtenerParametrosDeProductoFaseElementoRango($valoresElementos)
+   {
+        try {
+          $ResultadoProductoFaseElementoRango =null;
+         $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valoresElementos["tipoproducto_id"])
+          ->where('elementos_id', '=', $valoresElementos["elementos_id"])
+          ->where('jornada_id', '=', $valoresElementos["jornada_id"])
+          ->where('fasefenologica_id', '=',$valoresElementos["fasefenologica_id"])->get();
+            return $ResultadoProductoFaseElementoRango;
 
+            } catch (\Exception $e) {
+}
+    }
     /**
      * Show the form for editing the specified resource.
      *

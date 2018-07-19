@@ -26,7 +26,7 @@ class CreateValoreselementosTable extends Migration
            $table->integer('mes');
            $table->integer('anio');
            $table->timestamps();
-      
+           $table->unique(array('estaciones_id', 'elementos_id' , 'fechaestacion'));
 
         });
     }
