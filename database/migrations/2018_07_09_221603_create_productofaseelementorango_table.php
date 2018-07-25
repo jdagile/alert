@@ -19,12 +19,13 @@ class CreateProductofaseelementorangoTable extends Migration
           $table->integer('fasefenologica_id')->references('id')->on('fasefenologica');
           $table->integer('elementos_id')->references('id')->on('elementos');
           $table->integer('unidaddemedida_id')->references('id')->on('unidaddemedida');
+          $table->integer('tipodealerta_id')->nullable();
           $table->decimal('valorminimo',18,4) ;
           $table->decimal('valormaximo',18,4) ;
           $table->boolean('estaactivo');
 
           $table->timestamps();
-          $table->primary(array('tipoproducto_id', 'fasefenologica_id' , 'elementos_id' ,'unidaddemedida_id'));
+          $table->primary(array('tipoproducto_id', 'fasefenologica_id' , 'elementos_id' ,'unidaddemedida_id','tipodealerta_id'));
 
         });
     }
