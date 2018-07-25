@@ -55,14 +55,14 @@ return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
     {
         //
     }
-    public function ObtenerParametrosDeProductoFaseElementoRango($valoresElementos)
+    public function ObtenerParametrosDeProductoFaseElementoRango($valores)
    {
         try {
           $ResultadoProductoFaseElementoRango =null;
-         $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valoresElementos["tipoproducto_id"])
-          ->where('elementos_id', '=', $valoresElementos["elementos_id"])
-          ->where('jornada_id', '=', $valoresElementos["jornada_id"])
-          ->where('fasefenologica_id', '=',$valoresElementos["fasefenologica_id"])->get();
+         $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valores["tipoproducto_id"])
+          ->where('jornada_id', '=', $valores["jornada_id"])
+          ->where('fasefenologica_id', '=',$valores["fasefenologica_id"])->get();
+
             return $ResultadoProductoFaseElementoRango;
 
             } catch (\Exception $e) {
