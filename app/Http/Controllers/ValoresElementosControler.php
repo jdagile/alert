@@ -50,7 +50,7 @@ class ValoresElementosControler extends Controller
         $nuevoValorElemento->created_at  = $fechaActual;
         $nuevoValorElemento->updated_at  = $fechaActual;
         $nuevoValorElemento->save();
-    
+        return $nuevoValorElemento->id;
       } catch (\Exception $e) {
         echo "--------ocurrio un error al Registrar ValoresElementos   --->".$e;
       }
