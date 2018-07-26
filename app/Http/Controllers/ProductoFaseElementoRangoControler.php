@@ -11,7 +11,7 @@ class ProductoFaseElementoRangoControler extends Controller
     public function index()
     {
       $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
-return view('messages.productorango' , compact('ProductoFaseElementoRangos'));
+return view('productofaseelementorango' , compact('ProductoFaseElementoRangos'));
     }
 
     /**

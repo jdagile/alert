@@ -29,3 +29,5 @@ Route::get('saludos/{nombre?}',['as' =>'saludos', 'uses' =>'PagesController@salu
 Route::resource('productorango','ProductoFaseElementoRangoControler');
 Route::resource('prueba','MasterControler');
 Route::resource('estacionesalertas','EstacionAlertaControler');
+Route::resource('estacionesalertas2','EstacionAlertaControler');
+Route::resource('productofaseelementorango','ProductoFaseElementoRangoControler');
