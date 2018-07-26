@@ -15,10 +15,12 @@ class Example
      */
     public function handle($request, Closure $next)
     {
+
         if(false)
         {
             return $next($request);
         }
         return response('No se Puede Continuar',404);
+
     }
 }

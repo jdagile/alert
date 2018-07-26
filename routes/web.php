@@ -10,15 +10,22 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//Usuarios
+Route::get('login','Auth\LoginController@showLoginForm');
+Route::post('login','Auth\LoginController@login');
+
+
 Route::resource('mensajes','MessagesControler');
 
 Route::get('/', [ 'as' =>'home' ,'uses' => 'PagesController@home'])->middleware('example');
 
 Route::get('saludos/{nombre?}',['as' =>'saludos', 'uses' =>'PagesController@saludo'])->where('nombre',"[A-Za-z]+");
 
-Route::get('login','Auth\LoginController@showLoginForm');
+
 
 
 //Rutas de cicohalert
 Route::resource('productorango','ProductoFaseElementoRangoControler');
 Route::resource('prueba','MasterControler');
+Route::resource('estacionesalertas','EstacionAlertaControler');
