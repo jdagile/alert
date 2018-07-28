@@ -1,6 +1,6 @@
 @extends('layoutprincipal')
 @section('contenido')
-
+{!! csrf_field()!!}
 <!-- BEGIN: Subheader -->
 	<div class="m-subheader ">
 		<div class="d-flex align-items-center">
@@ -47,7 +47,29 @@
 					</div>
 					<div class="m-portlet__body">
 						<!--begin: Datatable -->
-						<div class="m_datatable" id="m_datatable_latest_orders"></div>
+
+
+  <div class="panel-body">
+						<table class="table table-bordered" id='alertas'>
+					            <thead>
+					              <th>valoreselementos_id</th>
+					              <th>tipodealerta_id </th>
+					          					            </thead>
+					            <tbody>
+					            @foreach($estacionesalertas as $alerta)
+					                <tr>
+					                    <td>{{$alerta->valoreselementos_id}}</td>
+					                    <td>{{$alerta->tipodealerta_id}}</td>
+					                 </tr>
+					            @endforeach
+					            </tbody>
+					        </table>
+    </div>
+
+
+
+
+
 						<!--end: Datatable -->
 					</div>
 				</div>
@@ -330,4 +352,19 @@
 			</div>
 		</div>
 		<!--End::Section-->
-@stop
+		@stop
+		@push('scripts')
+		<script>
+		$(document).ready(function(){
+		    $('#alertas').DataTable({
+		        "processing": true,
+		        "serverSide": true,
+		        "ajax": "alert",
+		        "columns":[
+		            {data: 'valoreselementos_id'},
+		            {data: 'tipodealerta_id'},
+		        ]
+		    });
+		});
+		</script>
+		@endpush
