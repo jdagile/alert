@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\EstacionesAlertas ;
 use Carbon\Carbon;
+use cicohalert;
+use Yajra\Datatables\Datatables;
 class EstacionesAlertasControler extends Controller
 {
     /**
@@ -12,8 +14,11 @@ class EstacionesAlertasControler extends Controller
      */
     public function index()
     {
-        //
+      $estacionesalertas = EstacionesAlertas::all()->take(10);
+    return View('estacionesalertas')->with('estacionesalertas',$estacionesalertas);
+
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -47,6 +52,7 @@ class EstacionesAlertasControler extends Controller
        }
      }
 
+
     /**
      * Display the specified resource.
      *
@@ -57,7 +63,11 @@ class EstacionesAlertasControler extends Controller
     {
         //
     }
+    public function anyData()
+    {
+      return DataTables::eloquent(EstacionesAlertas::query())->make(true);
 
+    }
     /**
      * Show the form for editing the specified resource.
      *

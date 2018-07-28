@@ -25,6 +25,7 @@
 	<link  href="{{ asset('demo/default/base/style.bundle.css')}}" type ="text/css" rel="stylesheet">
 		<!--end::Base Styles -->
 		<link href="{{ asset('demo/default/media/img/logo/logocicohalert.ico')}}">
+		<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 </head>
 
 <body  class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default"  >
@@ -841,15 +842,22 @@
 				</a>
 			</li>
 		</ul>
+
+		<div class="container">
+            @yield('contenido')
+        </div>
+
 		<!-- begin::Quick Nav -->
     	<!--begin::Base Scripts -->
 					<script type="text/javascript" src="{{ asset('vendors/base/vendors.bundle.js')}}"></script>
 					<script type="text/javascript" src="{{ asset('demo/demo3/base/scripts.bundle.js')}}"></script>
 					<script type="text/javascript" src="{{ asset('vendors/custom/fullcalendar/fullcalendar.bundle.js')}}"></script>
 					<script type="text/javascript" src="{{ asset('app/js/dashboard.js')}}"></script>
+					<script src="Http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
+					   @stack('scripts')
 		<!--end::Page Snippets -->
-		@yield('contenido')
+
 		<footer>Copyrig {{date('Y')}}</footer>
 	</body>
 
