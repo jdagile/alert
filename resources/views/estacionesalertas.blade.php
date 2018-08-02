@@ -52,14 +52,14 @@
   <div class="panel-body">
 						<table class="table table-bordered" id='alertas'>
 					            <thead>
-					              <th>valoreselementos_id</th>
-					              <th>tipodealerta_id </th>
+					              <th>aviso</th>
+					              <th>nivel </th>
 					          					            </thead>
 					            <tbody>
 					            @foreach($estacionesalertas as $alerta)
 					                <tr>
-					                    <td>{{$alerta->valoreselementos_id}}</td>
-					                    <td>{{$alerta->tipodealerta_id}}</td>
+					                    <td>{{$alerta->aviso}}</td>
+					                    <td>{{$alerta->nivel}}</td>
 					                 </tr>
 					            @endforeach
 					            </tbody>
@@ -353,18 +353,3 @@
 		</div>
 		<!--End::Section-->
 		@stop
-		@push('scripts')
-		<script>
-		$(document).ready(function(){
-		    $('#alertas').DataTable({
-		        "processing": true,
-		        "serverSide": true,
-		        "ajax": "alert",
-		        "columns":[
-		            {data: 'valoreselementos_id'},
-		            {data: 'tipodealerta_id'},
-		        ]
-		    });
-		});
-		</script>
-		@endpush

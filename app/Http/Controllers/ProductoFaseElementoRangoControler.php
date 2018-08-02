@@ -5,13 +5,40 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use cicohalert;
 use App\ProductoFaseElementoRango;
-
+use DB;
 class ProductoFaseElementoRangoControler extends Controller
 {
     public function index()
     {
+      /*
       $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
 return view('productofaseelementorango' , compact('ProductoFaseElementoRangos'));
+*/
+
+
+
+/*
+$listaDeAlertas = DB::select('select  * from public."listar_alertas_out"()');
+//$listaDeAlertas::query()->make(true);
+$resultado = array();
+foreach($listaDeAlertas as $r){
+    $resultado[] = $r;
+}
+print_r(json_encode($listaDeAlertas));
+return View('productofaseelementorango')->with('lista',$listaDeAlertas);
+*/
+$consulta=  DB::table('valoreselementos')
+              ->join('estaciones', 'valoreselementos.estaciones_id', '=', 'estaciones.id')
+              ->join('elementos', 'valoreselementos.elementos_id', '=', 'elementos.id')
+              ->join('unidaddemedida', 'valoreselementos.unidaddemedida_simbolo', '=', 'unidaddemedida.simbolo')
+              ->join('estacionesalertas', 'estacionesalertas.valoreselementos_id', '=', 'valoreselementos.id')
+              ->join('tipodealerta', 'estacionesalertas.tipodealerta_id', '=', 'tipodealerta.id')
+              ->join('niveldealerta', 'tipodealerta.niveldealerta_id', '=', 'niveldealerta.id')
+              ->select('niveldealerta.descripcion as out_nivel', 'tipodealerta.descripcion as out_aviso')
+              ->get();
+//print_r(json_encode($consulta));
+  return json_encode($consulta);
+
     }
 
     /**

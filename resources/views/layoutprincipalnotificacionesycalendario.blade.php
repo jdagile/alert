@@ -1,3 +1,4 @@
+
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
@@ -17,12 +18,11 @@
             }
           });
 		</script>
-				<script type="text/javascript" src="{{ asset('vendors/base/vendors.bundle.js')}}"></script>
-		<link  href="{{ asset('vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" type ="text/css" rel="stylesheet">
-	<link  href="{{ asset('demo/demo3/base/style.bundle.css')}}" type ="text/css" rel="stylesheet">
+			<link  href="{{ asset('vendors/custom/fullcalendar/fullcalendar.bundle.css')}}" type ="text/css" rel="stylesheet">
+			<link  href="{{ asset('demo/demo3/base/style.bundle.css')}}" type ="text/css" rel="stylesheet">
 		<!--end::Page Vendors -->
-
-	<link  href="{{ asset('demo/default/base/style.bundle.css')}}" type ="text/css" rel="stylesheet">
+	<link href="{{ asset('vendors/base/vendors.bundle.css')}}" type ="text/css" rel="stylesheet">
+	<link  href="{{ asset('demo/demo3/base/style.bundle.css')}}" type ="text/css" rel="stylesheet">
 		<!--end::Base Styles -->
 		<link href="{{ asset('demo/default/media/img/logo/logocicohalert.ico')}}">
 		<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
@@ -72,8 +72,8 @@
 
 										<li class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width" m-dropdown-toggle="click" m-dropdown-persistent="1">
 											<a href="#" class="m-nav__link m-dropdown__toggle" id="m_topbar_notification_icon">
-												<span class="m-nav__link-badge m-badge m-badge--accent">
-													3
+												<span class="m-nav__link-badge m-badge m-badge--accent" style="display:none" id="notificationsCount">
+													<!--AQUI SE MUESTRA EL CONTADOR DE NOTIFICACIONES-->
 												</span>
 												<span class="m-nav__link-icon">
 													<i class="flaticon-alert-2"></i>
@@ -83,11 +83,8 @@
 												<span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
 												<div class="m-dropdown__inner">
 													<div class="m-dropdown__header m--align-center" style="background: url(app/media/img/misc/notification_bg.jpg); background-size: cover;">
-														<span class="m-dropdown__header-title">
+														<span class="m-dropdown__header-title" id="notificationsTitle">
 															3 Notificaciones
-														</span>
-														<span class="m-dropdown__header-subtitle">
-															Notificaciones de Usuario
 														</span>
 													</div>
 													<div class="m-dropdown__body">
@@ -98,106 +95,13 @@
 																		Alertas
 																	</a>
 																</li>
-																<li class="nav-item m-tabs__item">
-																	<a class="nav-link m-tabs__link" data-toggle="tab" href="#topbar_notifications_events" role="tab">
-																		Eventos
-																	</a>
-																</li>
-																<li class="nav-item m-tabs__item">
-																	<a class="nav-link m-tabs__link" data-toggle="tab" href="#topbar_notifications_logs" role="tab">
-																		Historial
-																	</a>
-																</li>
 															</ul>
 															<div class="tab-content">
 																<div class="tab-pane active" id="topbar_notifications_notifications" role="tabpanel">
 																	<div class="m-scrollable" data-scrollable="true" data-height="250" data-mobile-height="200">
 																		<div class="m-list-timeline m-list-timeline--skin-light">
-																			<div class="m-list-timeline__items">
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
-																					<span class="m-list-timeline__text">
-																						Un usuario dmejia Nuevo se ha registrado
-																					</span>
-																					<span class="m-list-timeline__time">
-																						Just now
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						En sector de Lago de Yojoa estaion Luna del Puente
-																						<span class="m-badge m-badge--danger m-badge--wide">
-																							Alerta Roja
-																						</span>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						14 mins
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						Un usuario jrodriguez Nuevo se ha registrado
-																					</span>
-																					<span class="m-list-timeline__time">
-																						20 mins
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						En sector Capucas estaion Hoja de Caña
-																						<span class="m-badge m-badge--danger m-badge--wide">
-																							Alerta Roja
-																						</span>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						1 hr
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						System error -
-																						<a href="#" class="m-link">
-																							Check
-																						</a>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						2 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item m-list-timeline__item--read">
-																					<span class="m-list-timeline__badge"></span>
-																					<span href="" class="m-list-timeline__text">
-																						En sector Jesus De Otoro estaion Cumes
-																						<span class="m-badge m-badge--danger m-badge--wide">
-																							Alerta Roja
-																						</span>
-																					</span>
-																					<span class="m-list-timeline__time">
-																						7 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item m-list-timeline__item--read">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						Production server down
-																					</span>
-																					<span class="m-list-timeline__time">
-																						3 hrs
-																					</span>
-																				</div>
-																				<div class="m-list-timeline__item">
-																					<span class="m-list-timeline__badge"></span>
-																					<span class="m-list-timeline__text">
-																						Production server up
-																					</span>
-																					<span class="m-list-timeline__time">
-																						5 hrs
-																					</span>
-																				</div>
+																			<div class="m-list-timeline__items" id="notificationsItems">
+																				<!--AQUI SE AGREGAN LAS NOTIFICACIONES-->
 																			</div>
 																		</div>
 																	</div>
@@ -843,21 +747,22 @@
 			</li>
 		</ul>
 
-		<div class="container">
-            @yield('contenido')
-        </div>
+
 
 		<!-- begin::Quick Nav -->
     	<!--begin::Base Scripts -->
-			<script type="text/javascript" src="{{ asset('vendors/base/vendors.bundle.js')}}"></script>
-			<script type="text/javascript" src="{{ asset('demo/demo3/base/scripts.bundle.js')}}"></script>
-			<script type="text/javascript" src="{{ asset('vendors/custom/fullcalendar/fullcalendar.bundle.js')}}"></script>
-			<script type="text/javascript" src="{{ asset('vendors/custom/fullcalendar/es.js')}}"></script>
-			<script type="text/javascript" src="{{ asset('app/js/dashboard.js')}}"></script>
-			<script src="Http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+					<script type="text/javascript" src="{{ asset('vendors/base/vendors.bundle.js')}}"></script>
+					<script type="text/javascript" src="{{ asset('demo/demo3/base/scripts.bundle.js')}}"></script>
+					<script type="text/javascript" src="{{ asset('vendors/custom/fullcalendar/fullcalendar.bundle.js')}}"></script>
+					<script type="text/javascript" src="{{ asset('vendors/custom/fullcalendar/es.js')}}"></script>
+					<script type="text/javascript" src="{{ asset('app/js/dashboard.js')}}"></script>
+					<script src="Http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
 					   @stack('scripts')
 		<!--end::Page Snippets -->
-
+		<div class="container">
+						@yield('contenido')
+				</div>
 		<footer>Copyrig {{date('Y')}}</footer>
 	</body>
 
