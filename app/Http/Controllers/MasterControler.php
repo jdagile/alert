@@ -14,7 +14,7 @@ class MasterControler extends Controller
 2.Sincronizar automaticamente tablas generales *OK*
 3.Determinar si  una jornada Diurna o Nocturna en base a la hora del dia *OK*
 4.Registro de Valores elementos.*OK*
-5.Registro de Alertas.
+5.Registro de Alertas.ok
 6.La validacion de precipitacion del cuadro de excel de capucas debe realizar en base a acumulados
 7. definir seting para creacion de variables locales.
 8.Investigar e implementar elRolback en eloquent laravel
@@ -139,7 +139,7 @@ foreach ($estaciones as $estacion) {
                       $valoresElementosControler= new ValoresElementosControler();
                       $existenValoresElementos = $valoresElementosControler->VerificarExistencia($listaDeValoresElementos);
                       //Si no esta registrado en la base de datos se registra
-
+                       $valoreselementos_id=0;
                     if($existenValoresElementos != 1)
                       {
                       $valoreselementos_id =  $valoresElementosControler->store($listaDeValoresElementos);
@@ -175,14 +175,17 @@ foreach ($estaciones as $estacion) {
                      {
                        if($item['valor']< $productoFaseElementoRango['valorminimo'])
                        {
-                        echo "ento al for de  productoFaseElementoRango 3 ".'</br>';
+
 
                            $estacionesAlertasValores = array([]);
                            $estacionesAlertasValores =array_add($estacionesAlertasValores, 'valoreselementos_id', $valoreselementos_id);
                            $estacionesAlertasValores =array_add($estacionesAlertasValores, 'tipodealerta_id', $productoFaseElementoRango['tipodealerta_id']);
                            $estacionesAlertasControler = new EstacionesAlertasControler();
                            $estacionesAlertas = $estacionesAlertasControler->store($estacionesAlertasValores);
-
+                           if($item['valor'] ==200)
+                           {
+                             echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@REGISTRO VOLTAJE element_id ".$item['element_id']."de API Y DE productoFaseElementoRango ES ".$productoFaseElementoRango['elementos_id'].'</br>';
+                            }
 
                          echo $item['valor'].$item['symbol']." "." Este valor es menor que el minimo permitido --".$productoFaseElementoRango['valorminimo']."--Codigo Elemento ".$productoFaseElementoRango['elementos_id'].'<br>';
                        }
