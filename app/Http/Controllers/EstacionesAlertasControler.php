@@ -52,7 +52,7 @@ $estacionesalertas=  DB::table('valoreselementos')
                     ->join('tipodealerta', 'estacionesalertas.tipodealerta_id', '=', 'tipodealerta.id')
                     ->join('niveldealerta', 'tipodealerta.niveldealerta_id', '=', 'niveldealerta.id')
                     ->orderBy('estacionesalertas.id', 'ASC')
-                    ->select('niveldealerta.descripcion as nivel', 'tipodealerta.descripcion as aviso','estacionesalertas.id as idNivel' ,'estaciones.descripcion as estacion','elementos.descripcion as elemento','valoreselementos.valor' ,'unidaddemedida.descipcion as unidadDeMedida' ,'valoreselementos.fechaEstacion'   )
+                    ->select('niveldealerta.descripcion as nivel', 'tipodealerta.descripcion as aviso','estacionesalertas.id as idNivel' ,'estaciones.descripcion as estacion','elementos.descripcion as elemento','valoreselementos.valor' ,'valoreselementos.unidaddemedida_simbolo as unidadDeMedida' ,'valoreselementos.fechaEstacion'   )
                     ->get()->take(10);
 
         return View('estacionesalertas2')->with('estacionesalertas',$estacionesalertas);

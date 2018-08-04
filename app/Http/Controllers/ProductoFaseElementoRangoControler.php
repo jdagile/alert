@@ -87,7 +87,6 @@ $consulta=  DB::table('valoreselementos')
         try {
           $ResultadoProductoFaseElementoRango =null;
          $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valores["tipoproducto_id"])
-          ->where('jornada_id', '=', $valores["jornada_id"])
           ->where('fasefenologica_id', '=',$valores["fasefenologica_id"])->get();
 
             return $ResultadoProductoFaseElementoRango;

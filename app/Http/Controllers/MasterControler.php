@@ -146,19 +146,10 @@ foreach ($estaciones as $estacion) {
 
                       }
                       //ObtenerParametrosDeProductoFaseElementoRango
-                      //identificacion de jornada
-                      $jornada =0;
-                      if( $hora >=5  and $hora <=17 )
-                      {
-                        $jornada =1;
-                      }
-                      else {
-                        $jornada =2;
-                      }
+
                       //Obener información de la tabla ProductoFaseElementoRango
                       $productoFaseElementoRangosfiltro = array([]);
                       $productoFaseElementoRangosfiltro = array_add($productoFaseElementoRangosfiltro, 'tipoproducto_id', $tipoProducto['id']);
-                      $productoFaseElementoRangosfiltro = array_add($productoFaseElementoRangosfiltro, 'jornada_id', $jornada);
                       $productoFaseElementoRangosfiltro = array_add($productoFaseElementoRangosfiltro, 'fasefenologica_id', $fase['fasefenologica_id']);
                       $controladorProductoFaseElementoRango =null;
                       $controladorProductoFaseElementoRango =  new ProductoFaseElementoRangoControler();
@@ -170,29 +161,27 @@ foreach ($estaciones as $estacion) {
                    echo $valoreselementos_id;
                       if($valoreselementos_id >0)//tiene que registrar nuevos valores elementos.
                      {
-                       echo "ento al for de  productoFaseElementoRango 2 ".'</br>';
+
                      if(  ($item['element_id']== $productoFaseElementoRango['elementos_id'])  )
                      {
-                       if($item['valor']< $productoFaseElementoRango['valorminimo'])
-                       {
+                      
+//Validacion de valor contra Rango.
+if ($item['valor'] >= $productoFaseElementoRango['valorminimo'] && $item['valor'] <= $productoFaseElementoRango['valormaximo']) {
+  $estacionesAlertasValores = array([]);
+  $estacionesAlertasValores =array_add($estacionesAlertasValores, 'valoreselementos_id', $valoreselementos_id);
+  $estacionesAlertasValores =array_add($estacionesAlertasValores, 'tipodealerta_id', $productoFaseElementoRango['tipodealerta_id']);
+  $estacionesAlertasControler = new EstacionesAlertasControler();
+  $estacionesAlertas = $estacionesAlertasControler->store($estacionesAlertasValores);
+  echo $item['valor'].$item['symbol']." "." Se registro una alerta entre el valor minimo : ".$productoFaseElementoRango['valorminimo']."--y el valor maximo : ".$productoFaseElementoRango['valormaximo'].'<br>';
+
+}
+//Fin De validacion de valor contra Rango
 
 
-                           $estacionesAlertasValores = array([]);
-                           $estacionesAlertasValores =array_add($estacionesAlertasValores, 'valoreselementos_id', $valoreselementos_id);
-                           $estacionesAlertasValores =array_add($estacionesAlertasValores, 'tipodealerta_id', $productoFaseElementoRango['tipodealerta_id']);
-                           $estacionesAlertasControler = new EstacionesAlertasControler();
-                           $estacionesAlertas = $estacionesAlertasControler->store($estacionesAlertasValores);
-                           if($item['valor'] ==200)
-                           {
-                             echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@REGISTRO VOLTAJE element_id ".$item['element_id']."de API Y DE productoFaseElementoRango ES ".$productoFaseElementoRango['elementos_id'].'</br>';
-                            }
 
-                         echo $item['valor'].$item['symbol']." "." Este valor es menor que el minimo permitido --".$productoFaseElementoRango['valorminimo']."--Codigo Elemento ".$productoFaseElementoRango['elementos_id'].'<br>';
-                       }
-                       if($item['valor']> $productoFaseElementoRango['valormaximo'])
-                       {
-                         echo $item['valor'].$item['symbol']." "." Este valor es mayor que el maximo permitido --".$productoFaseElementoRango['valormaximo']."--Codigo Elemento ".$productoFaseElementoRango['elementos_id'].'<br>';
-                       }
+
+
+
                      }
                     }
 
