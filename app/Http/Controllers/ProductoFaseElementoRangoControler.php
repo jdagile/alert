@@ -1,130 +1,177 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-use cicohalert;
-use App\ProductoFaseElementoRango;
+use App\Http\Requests;
+Use App\User;
+Use App\TipoDeProducto;
+Use App\FaseFenologica;
+Use App\Elementos;
+Use App\TipoDeAlerta;
+Use App\TipoDeAltura;
+Use App\ProductoFaseElementoRango;
+use Auth;
+use Hash;
+use Session;
+use Yajra\Datatables\Facades\Datatables;
+use Validator;
 use DB;
 class ProductoFaseElementoRangoControler extends Controller
 {
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function ProductoFaseElementoRangos()
+  {
+      return View('setting/productofaseelementorangos');
+  }/**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function GetProductoFaseElementoRangos()
+    {
+      $consulta=  DB::table('productofaseelementorango')
+      ->join('tipodeproducto', 'productofaseelementorango.tipoproducto_id', '=', 'tipodeproducto.id')
+      ->join('fasefenologica', 'productofaseelementorango.fasefenologica_id', '=', 'fasefenologica.id')
+      ->join('elementos', 'productofaseelementorango.elementos_id', '=', 'elementos.id')
+      ->join('tipodealerta', 'productofaseelementorango.tipodealerta_id', '=', 'tipodealerta.id')
+      ->join('tipodealtura', 'productofaseelementorango.tipodealtura_id', '=', 'tipodealtura.id')
+      ->orderBy('productofaseelementorango.tipoproducto_id','productofaseelementorango.fasefenologica_id','productofaseelementorango.tipodealtura_id','productofaseelementorango.elementos_id' , 'productofaseelementorango.tipodealerta_id' ,'ASC')
+      ->select('productofaseelementorango.id as id','tipodeproducto.descripcion as tipodeproducto'  ,'fasefenologica.descripcion as fasefenologica'  ,'elementos.descripcion as elemento','tipodealerta.descripcion as tipodealerta' , 'tipodealtura.descripcion as tipodealtura', 'productofaseelementorango.valorminimo' , 'productofaseelementorango.valormaximo' , 'productofaseelementorango.estaactivo as estaactivo' )
+      ->get();
+      $valores = array();
+      foreach($consulta as $r){
+
+          $valores[] = $r;
+      }
+  $productofaseelementorango= collect($valores);
+      return Datatables::of($productofaseelementorango)->addColumn('action', function ($productofaseelementorango) {
+            $column = '<a href="javascript:void(0)" data-url="' . route('productofaseelementorangosedit', $productofaseelementorango->id) . '"  class="edit btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Edit</a>';
+             return $column;
+              })->make(true);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-      /*
-      $ProductoFaseElementoRangos = ProductoFaseElementoRango::all();
-return view('productofaseelementorango' , compact('ProductoFaseElementoRangos'));
-*/
-
-
-
-/*
-$listaDeAlertas = DB::select('select  * from public."listar_alertas_out"()');
-//$listaDeAlertas::query()->make(true);
-$resultado = array();
-foreach($listaDeAlertas as $r){
-    $resultado[] = $r;
-}
-print_r(json_encode($listaDeAlertas));
-return View('productofaseelementorango')->with('lista',$listaDeAlertas);
-*/
-$consulta=  DB::table('valoreselementos')
-              ->join('estaciones', 'valoreselementos.estaciones_id', '=', 'estaciones.id')
-              ->join('elementos', 'valoreselementos.elementos_id', '=', 'elementos.id')
-              ->join('unidaddemedida', 'valoreselementos.unidaddemedida_simbolo', '=', 'unidaddemedida.simbolo')
-              ->join('estacionesalertas', 'estacionesalertas.valoreselementos_id', '=', 'valoreselementos.id')
-              ->join('tipodealerta', 'estacionesalertas.tipodealerta_id', '=', 'tipodealerta.id')
-              ->join('niveldealerta', 'tipodealerta.niveldealerta_id', '=', 'niveldealerta.id')
-              ->select('niveldealerta.descripcion as out_nivel', 'tipodealerta.descripcion as out_aviso')
-              ->get();
-//print_r(json_encode($consulta));
-  return json_encode($consulta);
-
+      $TipoDeProductos = TipoDeProducto::where('estaactivo', true)->get();
+      $FaseFenologicas =  FaseFenologica::where('estaactivo', true)->get();
+      $Elementos= Elementos::where('estaactivo', true)->get();
+      $TipodeAlertas=TipoDeAlerta::where('estaactivo', true)->get();
+      $TipodeAlturas=TipoDeAltura::where('estaactivo', true)->get();
+      return View('setting/productofaseelementorangos', array( 'tipodeproductos' => $TipoDeProductos->toJson() ,'fasefenologicas'=> $FaseFenologicas->toJson(),'elementos' => $Elementos->toJson(),'tipodealertas' => $TipodeAlertas->toJson(),'tipodealturas'  =>$TipodeAlturas  ));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function MangePermissions()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-
-    }
-
-    public function all()
-    {
-        try {
-        return  ProductoFaseElementoRango::all();
-        } catch (\Exception $e) {
-
-        }
-
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-    public function ObtenerParametrosDeProductoFaseElementoRango($valores)
-   {
-        try {
-          $ResultadoProductoFaseElementoRango =null;
-         $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valores["tipoproducto_id"])
-          ->where('fasefenologica_id', '=',$valores["fasefenologica_id"])->get();
-
-            return $ResultadoProductoFaseElementoRango;
-
-            } catch (\Exception $e) {
-}
+        return View('users/managepermissions');
     }
     /**
-     * Show the form for editing the specified resource.
+     * Display a listing of the resource.
      *
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+     public function Edit($ID)
+     {
+         return ProductoFaseElementoRango::where('id', $ID)->get()->toJson();
+     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+      /**
+       * Display a listing of the resource.
+       *
+       * @return \Illuminate\Http\Response
+       */
+       public function CreateOrUpdate(Request $request)
+     {
+          $estaactivo = $request->get('estaactivo', 0); // second parameter is default value
+       $All_input = $request->input();
+       $ProductoFaseElementoRango = null;
+       $Existeproductofaseelementorangos =  ProductoFaseElementoRango::where('tipoproducto_id' , '=', $All_input['tipodeproductos'])
+                                                                                      ->where('fasefenologica_id' , '=' ,$All_input['fasefenologicas'])
+                                                                                     ->where('elementos_id' , '=', $All_input['elementos'])
+                                                                                     ->where('tipodealerta_id' , '=', $All_input['tipodealertas'])
+                                                                                     ->where('tipodealtura_id' , '=', $All_input['tipodealturas'])
+                                                                                      ->exists();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
+
+
+                 if($Existeproductofaseelementorangos==true  &&  $All_input['id'] != '')
+                  {
+
+                    $usersController= new UsersController();
+
+                      $ProductoFaseElementoRango = ProductoFaseElementoRango::where('id', $All_input['id'])->first();
+                      $ProductoFaseElementoRango->tipoproducto_id = $All_input['tipodeproductos'];
+                      $ProductoFaseElementoRango->fasefenologica_id = $All_input['fasefenologicas'];
+                      $ProductoFaseElementoRango->elementos_id = $All_input['elementos'];
+                      $ProductoFaseElementoRango->tipodealerta_id = $All_input['tipodealertas'];
+                      $ProductoFaseElementoRango->tipodealtura_id = $All_input['tipodealturas'];
+                      $ProductoFaseElementoRango->valorminimo = $All_input['valorminimo'];
+                      $ProductoFaseElementoRango->valormaximo = $All_input['valormaximo'];
+                      $ProductoFaseElementoRango->estaactivo = $estaactivo;
+                      $ProductoFaseElementoRango->save();
+
+                   Session::flash('flash_message', 'Se Edito Exitosamente!');
+                    Session::flash('flash_type', 'alert-success');
+
+                   }
+
+                   if($Existeproductofaseelementorangos==true && ( $request['id'] == 0   || $request['id'] =='' ))
+                    {
+                     Session::flash('flash_message', 'Ya existe registrado una parametrización para este producto con la fase Fenologica y elemento seleccionado');
+                     Session::flash('flash_type', 'alert-warning');
+
+                     }
+
+
+                                    if($Existeproductofaseelementorangos==false)
+                                     {
+
+
+                                         $ProductoFaseElementoRango = new ProductoFaseElementoRango();
+                                         $ProductoFaseElementoRango->tipoproducto_id = $All_input['tipodeproductos'];
+                                         $ProductoFaseElementoRango->fasefenologica_id = $All_input['fasefenologicas'];
+                                         $ProductoFaseElementoRango->elementos_id = $All_input['elementos'];
+                                         $ProductoFaseElementoRango->tipodealerta_id = $All_input['tipodealertas'];
+                                         $ProductoFaseElementoRango->tipodealtura_id = $All_input['tipodealturas'];
+                                         $ProductoFaseElementoRango->valorminimo = $All_input['valorminimo'];
+                                         $ProductoFaseElementoRango->valormaximo = $All_input['valormaximo'];
+                                         $ProductoFaseElementoRango->estaactivo = $estaactivo;
+                                       $ProductoFaseElementoRango->save();
+                                       Session::flash('flash_message', 'Se Guardo Exitosamente!');
+                                       Session::flash('flash_type', 'alert-success');
+
+                                     }
+
+                                     return redirect()->route('productofaseelementorangos');
+
+     }
+
+
+       public function ObtenerParametrosDeProductoFaseElementoRango($valores)
+          {
+              try {
+                $ResultadoProductoFaseElementoRango =null;
+               $ResultadoProductoFaseElementoRango = ProductoFaseElementoRango::where('tipoproducto_id', '=', $valores["tipoproducto_id"])
+                ->where('fasefenologica_id', '=',$valores["fasefenologica_id"])->get();
+
+                  return $ResultadoProductoFaseElementoRango;
+
+                  } catch (\Exception $e) {
+                    }
+          }
+
+
 }

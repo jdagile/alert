@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use DB;
-use cicohalert;
-class ApiAlertasControler extends Controller
+use DateTime;
+
+class ApiRestPruebasControler extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,105 +14,127 @@ class ApiAlertasControler extends Controller
      */
     public function index()
     {
-      $listaDeAlertas = DB::select('select * from public."listar_alertas_out"()');
-      //$listaDeAlertas::query()->make(true);
-      $resultado = array();
-      $fila = 0;
-      foreach($listaDeAlertas as $r){
-          //$resultado[] = $r;
-          $resultado[$fila]["Id"] = $fila;
-          $resultado[$fila]["title"] = utf8_encode($r->out_aviso);
-          $resultado[$fila]["start"] =  $r->out_fecha;
-          $resultado[$fila]["className"] = $this->getClassAlerta($r->out_idnivel);
-          $resultado[$fila]["description"] = utf8_encode($r->out_nivel)." - ".utf8_encode($r->out_aviso)." - Estacion:".utf8_encode($r->out_estacion)." - Elemento: ".utf8_encode($r->out_elemento)." - Valor: ".utf8_encode($r->out_valor)." ".utf8_encode($r->out_unidaddemedida);
-          $fila++;
+      if(isset($_GET["action"])){
+      	if($_GET["action"] ==  "datos1") {
+      		$this->getAlertasRecientes();
+      	} else if($_GET["action"] ==  "datos2") {
+      		$this->getAlertasCalendario();
+      	} else if($_GET["action"] ==  "datos3") {
+      		$this->getNotificaciones();
+      	}
       }
-      print_r(json_encode($resultado));
+        //
     }
 
+    public function getNotificaciones() {
+	$notificaciones = array();
+	$resultado = array();
+	if (($gestor = fopen("demo/alertas.csv", "r")) !== FALSE) {
+		$fila=0;
+	    while (($data = fgetcsv($gestor, 1000, ";")) !== FALSE) {
+	    	$notificaciones[$fila]["Id"] = $fila;
+	    	$notificaciones[$fila]["mensaje"] = utf8_encode($data[0]);
+	    	$t = $this->calcularTiempo(str_replace("/","-",$data[7]), date('Y-m-d H:i:s'));
+	        $notificaciones[$fila]["antiguedad"] = $t[0];
+	        $notificaciones[$fila]["nueva"] = ($t[1]<60)?1:0;
+	        $notificaciones[$fila]["tipo"] = utf8_encode($data[1]);
+	        $fila++;
+	        if($fila>=15){
+	        	break;
+	        }
+	    }
+	    fclose($gestor);
+	}
+	echo json_encode($notificaciones);
+}
 
-private function getClassAlerta($tipo) {
+public function calcularTiempo($fecha1, $fecha2) {
+	$date1 = new DateTime($fecha1);
+	$date2 = new DateTime($fecha2);
+	$diff = $date2->diff($date1);
+
+	$segundos = $diff->h*60*60 + $diff->days*24*60*60 + $diff->i*60 + $diff->s;
+	$tiempo = array();
+	if($segundos >= 60) {
+		if(($segundos/60)>=60){
+			if(($segundos/60/60)>=24){
+				$tiempo[] = intval($segundos/60/60/24)."d";
+			} else {
+				$tiempo[] = intval($segundos/60/60)."h";
+			}
+		} else {
+			$tiempo[] = intval($segundos/60)."min";
+		}
+	} else {
+		$tiempo[] = $segundos."s";
+	}
+	$tiempo[] = intval($segundos/60);
+	return $tiempo;
+}
+
+public function getClassAlerta($tipo) {
 	$cssClass = "m-fc-event--light m-fc-event--solid-";
 	switch ($tipo) {
-	    case 1:
+	    case "Alerta Roja":
 	       $cssClass .= "danger";
 	        break;
-	    case 2:
+	    case 1:
 	       $cssClass .= "warning";
 	        break;
-	    case 3:
-	        $cssClass .= "success";
+	    case 2:
+	        $cssClass .= "info";
 	        break;
 	   default:
-	   		$cssClass .= "";
+	   		$cssClass .= "primary";
 
 	}
 	return $cssClass;
 }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+public function getAlertasCalendario() {
+	$alertas = array();
+	$resultado = array();
+	if (($gestor = fopen("demo/alertas.csv", "r")) !== FALSE) {
+		$fila=0;
+	    while (($data = fgetcsv($gestor, 1000, ";")) !== FALSE) {
+	    	$alertas[$fila]["Id"] = $fila;
+	    	$alertas[$fila]["title"] = utf8_encode($data[0]);
+	        $alertas[$fila]["start"] =  date("Y-m-d H:i:s", strtotime(str_replace("/","-",$data[7])));
+	        $alertas[$fila]["className"] = $this->getClassAlerta(utf8_encode($data[1]));
+	       	$alertas[$fila]["description"] = utf8_encode($data[1])." - ".utf8_encode($data[0])." - Estacion:".utf8_encode($data[3])." - Elemento: ".utf8_encode($data[4])." - Valor: ".utf8_encode($data[5])." ".utf8_encode($data[6]);
+	        $fila++;
+	    }
+	    fclose($gestor);
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+	//$resultado["data"] = $alertas;
+	echo json_encode($alertas);
+}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+public function getAlertasRecientes(){
+	$alertas = array();
+	$resultado = array();
+	if (($gestor = fopen("demo/alertas.csv", "r")) !== FALSE) {
+		$fila=0;
+	    while (($data = fgetcsv($gestor, 1000, ";")) !== FALSE) {
+	    	$alertas[$fila]["Id"] = $fila;
+	    	$alertas[$fila]["Aviso"] = utf8_encode($data[0]);
+	       	$alertas[$fila]["NivelAlerta"] = utf8_encode($data[1]);
+	        $alertas[$fila]["ClassName"] = utf8_encode($data[2]);
+	        $alertas[$fila]["Estacion"] = utf8_encode($data[3]);
+	        $alertas[$fila]["Elemento"] = utf8_encode($data[4]);
+	        $alertas[$fila]["Valor"] = $data[5];
+	        $alertas[$fila]["UnidadMedida"] = utf8_encode($data[6]);
+	        $alertas[$fila]["Fecha"] = utf8_encode($data[7]);
+	        $fila++;
+	    }
+	    fclose($gestor);
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+	$resultado["meta"] = array("total"=> count($alertas),"page"=>1,"pages"=>1,"perpage"=>-1,"sort"=>"asc","field"=>"Id");
+	$resultado["data"] = $alertas;
+	echo json_encode($resultado);
+}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

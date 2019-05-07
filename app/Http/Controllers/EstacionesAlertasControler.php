@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\EstacionesAlertas ;
 use Carbon\Carbon;
-use cicohalert;
 use Yajra\Datatables\Datatables;
 use DB;
 
@@ -16,47 +16,26 @@ class EstacionesAlertasControler extends Controller
      */
     public function index()
     {
-/*
-  $estacionesalertas = DB::select('select  * from public."listar_alertas_out"() limit 10');
-  //$listaDeAlertas::query()->make(true);
-  $resultado = array();
-  foreach($estacionesalertas as $r){
-      $resultado[] = $r;
-  }
+      $usersController= new UsersController();
+        $user= $usersController->UsuarioPorEmail(session('email') );
 
-  return View('estacionesalertas')->with('estacionesalertas',$estacionesalertas);
-*/
 $estacionesalertas=  DB::table('valoreselementos')
               ->join('estaciones', 'valoreselementos.estaciones_id', '=', 'estaciones.id')
               ->join('elementos', 'valoreselementos.elementos_id', '=', 'elementos.id')
               ->join('unidaddemedida', 'valoreselementos.unidaddemedida_simbolo', '=', 'unidaddemedida.simbolo')
               ->join('estacionesalertas', 'estacionesalertas.valoreselementos_id', '=', 'valoreselementos.id')
               ->join('tipodealerta', 'estacionesalertas.tipodealerta_id', '=', 'tipodealerta.id')
-              ->join('niveldealerta', 'tipodealerta.niveldealerta_id', '=', 'niveldealerta.id')
-              ->orderBy('estacionesalertas.id', 'DESC')
+              ->join('regionesestaciones', 'regionesestaciones.estaciones_id', '=', 'estaciones.id')
+              ->where('regionesestaciones.region_id' , '=', $user->regions_id)
+              ->orderBy('estaciones.descripcion','DESC')
               ->select('niveldealerta.descripcion as nivel', 'tipodealerta.descripcion as aviso', 'niveldealerta.id as idNivel' ,'estaciones.descripcion as estacion','elementos.descripcion as elemento','valoreselementos.valor' ,'unidaddemedida.descripcion as unidadDeMedida' ,'valoreselementos.fechaestacion'   )
-              ->get()->take(10);
+              ->get();
 
   return View('estacionesalertas')->with('estacionesalertas',$estacionesalertas);
 
+//return json_encode($estacionesalertas);
     }
 
-
-    public function index2()
-    {
-      $estacionesalertas=  DB::table('valoreselementos')
-                    ->join('estaciones', 'valoreselementos.estaciones_id', '=', 'estaciones.id')
-                    ->join('elementos', 'valoreselementos.elementos_id', '=', 'elementos.id')
-                    ->join('unidaddemedida', 'valoreselementos.unidaddemedida_simbolo', '=', 'unidaddemedida.simbolo')
-                    ->join('estacionesalertas', 'estacionesalertas.valoreselementos_id', '=', 'valoreselementos.id')
-                    ->join('tipodealerta', 'estacionesalertas.tipodealerta_id', '=', 'tipodealerta.id')
-                    ->join('niveldealerta', 'tipodealerta.niveldealerta_id', '=', 'niveldealerta.id')
-                    ->orderBy('estacionesalertas.id', 'ASC')
-                    ->select('niveldealerta.descripcion as nivel', 'tipodealerta.descripcion as aviso','estacionesalertas.id as idNivel' ,'estaciones.descripcion as estacion','elementos.descripcion as elemento','valoreselementos.valor' ,'valoreselementos.unidaddemedida_simbolo as unidadDeMedida' ,'valoreselementos.fechaEstacion'   )
-                    ->get()->take(10);
-
-        return View('estacionesalertas2')->with('estacionesalertas',$estacionesalertas);
-  }
 
 public function alertacalendario()
 {
@@ -71,15 +50,35 @@ public function alertacalendario()
     return View('estacionesalertas')->with('estacionesalertas',json_encode($estacionesalertas));
 
 }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+
+
+public function temperatura_ambiente()
+{
+    return $this->recuperar_elemento_por_dias(10, 5);
+}
+
+public function humedad_relativa()
+{
+    return $this->recuperar_elemento_por_dias(30, 5);
+}
+
+public function recuperar_elemento_por_dias($elemento, $dias) {
+	return DB::select('select * from public."listar_elemento_por_dias"('. session('region_id')  .','  .$elemento.','.$dias.')' );
+}
+
+public function listar_promedios_por_region_out($sector_id)
+{
+
+  $promedios_por_region = DB::select('select * from public."listar_promedios_por_region_out"( ' .$sector_id.' )');
+  //$listaDeAlertas::query()->make(true);
+  $resultado = array();
+  foreach($promedios_por_region as $r){
+      $resultado[] = $r;
+  }
+  //print_r(json_encode($promedios_por_region));
+    return View('DashBoard')->with('promedios_por_region',json_encode($promedios_por_region));
+
+}
 
     /**
      * Store a newly created resource in storage.
@@ -104,16 +103,7 @@ public function alertacalendario()
      }
 
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+
     public function anyData()
     {
       return DataTables::eloquent(EstacionesAlertas::query())->make(true);
@@ -125,37 +115,7 @@ public function alertacalendario()
     $listaDeAlertas = DB::select('call listar_alertas_out()');
     return View('lista')->with('lista',$listaDeAlertas);
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
 }
